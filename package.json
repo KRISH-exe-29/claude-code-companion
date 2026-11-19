@@ -1,0 +1,25 @@
+{
+  "name": "claude-code-companion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An animated desktop companion that reacts to Claude Code: it walks your screen, shows what Claude is doing, and pulls a signature move over your chat when a task is done",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\"",
+    "hooks:install": "node scripts/install-hooks.js",
+    "hooks:uninstall": "node scripts/install-hooks.js --uninstall",
+    "demo": "node scripts/demo.js"
+  },
+  "devDependencies": {
+    "electron": "^45.4.1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "hooks",
+    "electron",
+    "desktop-pet",
+    "companion"
+  ]
+}

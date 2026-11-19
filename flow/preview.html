@@ -1,0 +1,21 @@
+<!doctype html>
+<meta charset="utf-8"><title>Companion clips</title>
+<style>
+  body { margin: 0; background: #1b1c22; color: #cfd2dc; font: 14px "Segoe UI", system-ui, sans-serif; }
+  h1 { font-size: 16px; font-weight: 600; margin: 16px 20px 4px; }
+  table { border-collapse: collapse; margin: 0 12px 16px; }
+  th { font-weight: 500; color: #8b90a0; padding: 6px 10px; text-transform: uppercase; font-size: 11px; letter-spacing: .08em; }
+  td { padding: 4px 10px; text-align: center; }
+  td.name { text-align: right; font-weight: 600; }
+  video { height: 210px; display: block; margin: auto; }
+</style>
+<h1>Companion clips: what each team looks like in each mood</h1>
+<table id="t"></table>
+<script>
+const teams = { halo: 'HALO', drift: 'DRIFT', redline: 'REDLINE' };
+const moods = ['idle', 'thinking', 'working', 'needs-you', 'done'];
+const t = document.getElementById('t');
+t.innerHTML = '<tr><th></th>' + moods.map(m => `<th>${m}</th>`).join('') + '</tr>' +
+  Object.entries(teams).map(([k, n]) => `<tr><td class="name">${n}</td>` +
+    moods.map(m => `<td><video src="../assets/${k}/${m}.webm" autoplay loop muted playsinline></video></td>`).join('') + '</tr>').join('');
+</script>
