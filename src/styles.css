@@ -1,0 +1,171 @@
+:root { --team-color: #f5f5f5; --float-dur: 4s; --s: 0.6; } /* --s: character size (1 = 250 px tall) */
+
+* { box-sizing: border-box; margin: 0; }
+
+html, body { width: 100%; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+
+/* No panel: only the character, its glow and particles, roaming over a transparent screen layer. */
+.sprite { position: absolute; left: 0; top: 0; will-change: transform; transition: opacity 400ms, filter 400ms; }
+.shrink { transform-origin: 100% 100%; transition: transform 600ms cubic-bezier(.3, .7, .3, 1); }
+.parked .shrink { transform: scale(0.42); }
+.parked.needs-you .shrink { transform: scale(1); } /* pops back out in the corner when Claude needs you */
+.figure { cursor: grab; }
+.dragging .figure { cursor: grabbing; }
+.sprite.dim { opacity: 0.45; filter: grayscale(0.6); }
+
+/* ---------- stage ---------- */
+.stage { position: relative; width: calc(236px * var(--s)); height: calc(272px * var(--s)); display: grid; place-items: center; }
+.stage > * { grid-area: 1 / 1; }
+
+.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+.aura {
+  width: calc(190px * var(--s)); height: calc(190px * var(--s)); border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--team-color) 45%, transparent) 0%, transparent 68%);
+  animation: aura-breathe calc(var(--float-dur) * 1.2) ease-in-out infinite;
+}
+
+@keyframes aura-breathe {
+  0%, 100% { transform: scale(0.85); opacity: 0.55; }
+  50% { transform: scale(1.08); opacity: 0.95; }
+}
+
+.figure { position: relative; height: calc(252px * var(--s)); animation: float var(--float-dur) ease-in-out infinite; transform-origin: 50% 90%; }
+.char {
+  display: block; height: 100%; width: auto;
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--team-color) 55%, transparent)) drop-shadow(0 12px 10px rgba(0, 0, 0, 0.6));
+  animation: breathe calc(var(--float-dur) * 0.9) ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(3px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.006, 1.014); }
+}
+
+/* mood tempo */
+.idle { --float-dur: 4.2s; }
+.thinking { --float-dur: 2.8s; }
+.working { --float-dur: 1.3s; }
+.needs-you { --float-dur: 0.9s; }
+.done { --float-dur: 5s; }
+
+.thinking .figure { animation-name: float-tilt; }
+@keyframes float-tilt {
+  0%, 100% { transform: translateY(2px) rotate(-1.2deg); }
+  50% { transform: translateY(-6px) rotate(1.2deg); }
+}
+
+.working .figure { animation-name: float-work; }
+@keyframes float-work {
+  0%, 100% { transform: translateY(1px) scale(1); }
+  50% { transform: translateY(-5px) scale(1.015); }
+}
+
+.needs-you .figure { animation: hop 0.9s cubic-bezier(.3, .7, .4, 1) infinite; }
+@keyframes hop {
+  0%, 100% { transform: translateY(2px) scale(1.02, 0.98); }
+  35% { transform: translateY(-16px) scale(0.99, 1.02); }
+  60% { transform: translateY(0) scale(1.02, 0.98); }
+}
+.needs-you .char { filter: drop-shadow(0 0 22px var(--team-color)) drop-shadow(0 0 8px var(--team-color)) drop-shadow(0 12px 10px rgba(0, 0, 0, 0.6)); }
+
+.done .figure { animation-name: float; }
+
+/* ---------- HALO: golden sun rays ---------- */
+.team-halo .aura {
+  width: calc(230px * var(--s)); height: calc(230px * var(--s));
+  background:
+    radial-gradient(circle, rgba(255, 214, 102, 0.75) 0%, rgba(255, 190, 40, 0.25) 35%, transparent 62%),
+    repeating-conic-gradient(from 0deg, rgba(255, 210, 90, 0.38) 0deg 5deg, transparent 5deg 18deg);
+  -webkit-mask: radial-gradient(circle, #000 30%, transparent 70%);
+  animation: rays calc(var(--float-dur) * 5) linear infinite, aura-breathe calc(var(--float-dur) * 1.2) ease-in-out infinite;
+}
+@keyframes rays { to { rotate: 360deg; } }
+
+/* ---------- DRIFT: riding the board ---------- */
+.team-drift .figure { animation-name: surf; transform-origin: 50% 80%; }
+@keyframes surf {
+  0%, 100% { transform: translate(-4px, 3px) rotate(-2deg); }
+  50% { transform: translate(5px, -6px) rotate(1.5deg); }
+}
+.team-drift.needs-you .figure { animation: surf-carve 0.9s ease-in-out infinite; }
+@keyframes surf-carve {
+  0%, 100% { transform: translate(-6px, 2px) rotate(-4deg); }
+  50% { transform: translate(6px, -12px) rotate(3deg); }
+}
+.team-drift .aura { width: calc(220px * var(--s)); height: calc(120px * var(--s)); margin-top: calc(130px * var(--s)); border-radius: 50%; }
+
+/* ---------- REDLINE: visor and chest light ---------- */
+.glow { display: none; position: absolute; border-radius: 50%; transform: translate(-50%, -50%); mix-blend-mode: screen; pointer-events: none; }
+.team-redline .glow { display: block; }
+.eyes { left: 50.3%; top: 18%; width: calc(70px * var(--s)); height: calc(16px * var(--s)); background: radial-gradient(ellipse, rgba(255, 60, 40, 0.95), transparent 70%); animation: pulse-glow 1.6s ease-in-out infinite; }
+.core { left: 48.4%; top: 41.1%; width: calc(34px * var(--s)); height: calc(34px * var(--s)); background: radial-gradient(circle, rgba(255, 190, 90, 0.95), rgba(255, 110, 0, 0.35) 45%, transparent 70%); animation: pulse-glow 1.6s ease-in-out infinite 0.3s; }
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.45; transform: translate(-50%, -50%) scale(0.85); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+}
+.team-redline.thinking .glow { animation-duration: 1s; }
+.team-redline.working .glow { animation-duration: 0.5s; }
+.team-redline.needs-you .glow { animation: flicker 0.25s steps(2, jump-none) infinite; }
+@keyframes flicker {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1.4); }
+  to { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+/* ---------- placeholder orb (no character image) ---------- */
+.orb {
+  display: none; width: calc(110px * var(--s)); height: calc(110px * var(--s)); border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0%, var(--team-color) 35%, color-mix(in srgb, var(--team-color) 25%, #000) 100%);
+  box-shadow: 0 0 calc(40px * var(--s)) calc(8px * var(--s)) color-mix(in srgb, var(--team-color) 45%, transparent);
+  animation: pulse var(--float-dur) ease-in-out infinite;
+}
+.no-char .orb { display: block; }
+.no-char .figure, .no-char .aura { display: none; }
+@keyframes pulse {
+  0%, 100% { transform: scale(0.9); filter: brightness(0.85); }
+  50% { transform: scale(1.04); filter: brightness(1.15); }
+}
+
+/* ---------- optional Flow clip overrides everything ---------- */
+.clip { width: auto; height: calc(252px * var(--s)); opacity: 0; transition: opacity 200ms; cursor: grab; animation: float var(--float-dur) ease-in-out infinite; transform-origin: 50% 90%; }
+.clip.on { opacity: 1; }
+.has-clip .figure, .has-clip .orb, .has-clip .aura, .has-clip .fx { visibility: hidden; }
+
+/* ---------- chat effect layer (under the character) ---------- */
+.chat { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.sprite { z-index: 1; }
+.menu { z-index: 2; }
+
+/* ---------- ring menu ---------- */
+.menu { position: absolute; inset: 0; pointer-events: none; }
+.ring {
+  position: absolute; border-radius: 50%; transform: translate(-50%, -50%) scale(0.6);
+  border: 1.5px dashed color-mix(in srgb, var(--team-color) 60%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--team-color) 35%, transparent);
+  opacity: 0; transition: opacity 200ms, transform 300ms cubic-bezier(.3, 1.4, .5, 1);
+}
+.mbtn {
+  position: absolute; width: 30px; height: 30px; padding: 0; border-radius: 50%;
+  display: grid; place-items: center; font: 600 17px/1 "Segoe UI", system-ui, sans-serif; color: #fff;
+  background: rgba(14, 15, 20, 0.88); border: 1.5px solid var(--team-color);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--team-color) 55%, transparent);
+  transform: translate(-50%, -50%) scale(0); transition: transform 250ms cubic-bezier(.3, 1.5, .5, 1), background 150ms;
+  cursor: pointer; pointer-events: none;
+}
+.menu.open .ring { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.menu.open .mbtn { transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+.menu.open .mbtn.close { transition-delay: 60ms; }
+.mbtn:hover { background: color-mix(in srgb, var(--team-color) 35%, #0e0f14); }
+.mbtn.close:hover { background: #c62828; border-color: #ff6b6b; }
+.mbtn[hidden] { display: none; }
+.mbtn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0s !important; animation-iteration-count: 1 !important; }
+}
