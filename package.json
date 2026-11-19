@@ -1,0 +1,14 @@
+{
+  "name": "companion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Floating coding companion for the FRIDAY/JARVIS/ULTRON Claude Code teams",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^45.4.1"
+  }
+}

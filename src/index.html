@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data:; media-src 'self' file:; style-src 'self'; script-src 'self'">
+  <title>Companion</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="chat" class="chat"></canvas>
+  <div id="sprite" class="sprite team-default idle dim">
+    <div class="shrink">
+    <div id="stage" class="stage">
+      <div class="aura"></div>
+      <canvas id="fx" class="fx"></canvas>
+      <div id="figure" class="figure">
+        <img id="char" class="char" alt="">
+        <span class="glow eyes"></span>
+        <span class="glow core"></span>
+      </div>
+      <div class="orb"></div>
+      <video id="clip" class="clip" autoplay loop muted playsinline></video>
+    </div>
+    </div>
+  </div>
+  <div id="menu" class="menu">
+    <div class="ring"></div>
+    <button id="btn-min" class="mbtn" title="Minimize">&ndash;</button>
+    <button id="btn-fx" class="mbtn" title="Surf the chat">&#8776;</button>
+    <button id="btn-close" class="mbtn close" title="Close">&times;</button>
+  </div>
+  <script src="renderer.js"></script>
+  <script src="chatfx.js"></script>
+</body>
+</html>
